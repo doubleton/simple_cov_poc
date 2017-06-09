@@ -21,5 +21,3 @@
 
 /app/views/coverage/*
 !/app/views/coverage/.keep
-
-/public/assets/0.10.1/*
