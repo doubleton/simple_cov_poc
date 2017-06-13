@@ -36,19 +36,12 @@ module SimpleCov
       # end
 
       def results(key = redis_key)
-        results = []
-        list = Redis.current.lrange(key, 0, -1)
-        list.each do |string|
-          result = SimpleCov::Result.from_hash(JSON.parse(string))
-          results << result
-        end
-        results
+        Redis.current.lrange(key, 0, -1).map { |string| SimpleCov::Result.from_hash(JSON.parse(string)) }
       end
 
       # Saves the given SimpleCov::Result to Redis list
       def store_result(result)
         Redis.current.rpush(redis_key, JSON.pretty_generate(result.to_hash))
-
         true
       end
     end
