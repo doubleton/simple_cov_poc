@@ -9,6 +9,17 @@
   </head>
 
   <body>
+
+    <% if ENV['TEST_COV'] %>
+      <h1>Current Test Run: <%= ENV.fetch('TEST_COV') %></h1>
+      <h1 style="color: red">Status: <%= SimpleCov.running ? 'Running' : 'Stopped' %></h1>
+    <% end %>
+
+    <ul style="display: inline-block">
+      <li><%= link_to 'Posts', posts_path %></li>
+      <li><%= link_to 'Testings', testings_path %></li>
+    </ul>
+
     <%= yield %>
   </body>
 </html>

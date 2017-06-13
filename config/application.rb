@@ -10,9 +10,17 @@ Dotenv::Railtie.load
 
 if ENV['TEST_COV']
   require 'simplecov'
+  require 'securerandom'
+
+  SimpleCov.at_exit do
+    SimpleCov.result
+    Redis.current.sadd(ENV.fetch('TESTS_KEY') { 'tests' }, ENV.fetch('TEST_COV'))
+  end
+
   SimpleCov.start 'rails' do
-    command_name "Manual Tests PID #{$$}"
-    coverage_dir 'app/views/coverage'
+    command_name "Manual Tests #{SecureRandom.uuid}"
+    coverage_dir 'app/views/testings'
+    add_filter '/vendor/'
   end
 end
 

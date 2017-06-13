@@ -4,6 +4,6 @@ Rails.application.routes.draw do
     resources :comments
   end
 
-  get '/coverage' => 'coverage#index'
+  resources :testings, only: [:index, :show, :destroy]
 
 end
