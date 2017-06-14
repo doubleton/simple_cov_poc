@@ -17,6 +17,10 @@ if ENV['TEST_COV']
     Redis.current.sadd(ENV.fetch('TESTS_KEY') { 'tests' }, ENV.fetch('TEST_COV'))
   end
 
+  if ENV['TARGET_BRANCH']
+    SimpleCov.add_filter GitDiffFilter.new(ENV['TARGET_BRANCH'])
+  end
+
   SimpleCov.start 'rails' do
     command_name "Manual Tests #{SecureRandom.uuid}"
     coverage_dir 'app/views/testings'
