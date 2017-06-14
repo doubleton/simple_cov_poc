@@ -18,7 +18,8 @@ if ENV['TEST_COV']
   end
 
   if ENV['TARGET_BRANCH']
-    SimpleCov.add_filter GitDiffFilter.new(ENV['TARGET_BRANCH'])
+    require_relative '../lib/simplecov/git_diff_filter'
+    SimpleCov.add_filter SimpleCov::GitDiffFilter.new(ENV['TARGET_BRANCH'])
   end
 
   SimpleCov.start 'rails' do
