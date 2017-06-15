@@ -17,9 +17,9 @@ if ENV['TEST_COV']
     Redis.current.sadd(ENV.fetch('TESTS_KEY') { 'tests' }, ENV.fetch('TEST_COV'))
   end
 
-  if ENV['TARGET_BRANCH']
+  if ENV['DIFF_FILE_PATH']
     require_relative '../lib/simplecov/git_diff_filter'
-    SimpleCov.add_filter SimpleCov::GitDiffFilter.new(ENV['TARGET_BRANCH'])
+    SimpleCov.add_filter SimpleCov::GitDiffFilter.new(ENV['DIFF_FILE_PATH'])
   end
 
   SimpleCov.start 'rails' do

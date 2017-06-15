@@ -1,0 +1,8 @@
+.env.development
+.env.staging
+.env.test
+README.md
+app/controllers/posts_controller.rb
+app/models/comment.rb
+config/application.rb
+lib/simplecov/git_diff_filter.rb
