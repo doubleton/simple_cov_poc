@@ -3,7 +3,7 @@ class SimpleCov::GitDiffFilter < SimpleCov::Filter
   attr_reader :diff_files
 
   def initialize(diff_file_path)
-    @diff_files = File.readlines(diff_file_path)
+    @diff_files = File.readlines(diff_file_path).map { |line| line.rstrip }
   end
 
   # def initialize(target_branch, base_branch = 'master')
