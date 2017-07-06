@@ -1015,3 +1015,5 @@ index 0000000..e9be0a6
 +end
 \ No newline at end of file
 .diff
+app/controllers/coverage_controller.rb
+app/controllers/posts_controller.rb
