@@ -1,49 +1,162 @@
 diff --git a/.diff b/.diff
 new file mode 100644
-index 0000000..33cf911
+index 0000000..f7b7350
 --- /dev/null
 +++ b/.diff
-@@ -0,0 +1,1019 @@
+@@ -0,0 +1,1403 @@
 +diff --git a/.diff b/.diff
 +new file mode 100644
-+index 0000000..23b41f6
++index 0000000..33cf911
 +--- /dev/null
 ++++ b/.diff
-+@@ -0,0 +1,719 @@
++@@ -0,0 +1,1019 @@
 ++diff --git a/.diff b/.diff
 ++new file mode 100644
-++index 0000000..bff2466
+++index 0000000..23b41f6
 ++--- /dev/null
 +++++ b/.diff
-++@@ -0,0 +1,421 @@
+++@@ -0,0 +1,719 @@
 +++diff --git a/.diff b/.diff
 +++new file mode 100644
-+++index 0000000..95e08ad
++++index 0000000..bff2466
 +++--- /dev/null
 ++++++ b/.diff
-+++@@ -0,0 +1,121 @@
++++@@ -0,0 +1,421 @@
 ++++diff --git a/.diff b/.diff
 ++++new file mode 100644
-++++index 0000000..ec3908d
+++++index 0000000..95e08ad
 ++++--- /dev/null
 +++++++ b/.diff
-++++@@ -0,0 +1,8 @@
+++++@@ -0,0 +1,121 @@
++++++diff --git a/.diff b/.diff
++++++new file mode 100644
++++++index 0000000..ec3908d
++++++--- /dev/null
+++++++++ b/.diff
++++++@@ -0,0 +1,8 @@
+++++++.env.development
+++++++.env.staging
+++++++.env.test
+++++++README.md
+++++++app/controllers/posts_controller.rb
+++++++app/models/comment.rb
+++++++config/application.rb
+++++++lib/simplecov/git_diff_filter.rb
++++++diff --git a/.env.development b/.env.development
++++++index 68ba0a6..c3a2b92 100644
++++++--- a/.env.development
+++++++++ b/.env.development
++++++@@ -1,2 +1,4 @@
++++++-#TEST_COV=myTest1
+++++++TEST_COV=myTest2
+++++++DIFF_FILE_PATH=.diff
+++++++#TARGET_BRANCH=branch1
++++++ REDIS_URL=redis://127.0.0.1:6379/0
++++++\ No newline at end of file
++++++diff --git a/.env.staging b/.env.staging
++++++new file mode 100644
++++++index 0000000..e69de29
++++++diff --git a/.env.test b/.env.test
++++++deleted file mode 100644
++++++index 1a15c7f..0000000
++++++--- a/.env.test
+++++++++ /dev/null
++++++@@ -1,2 +0,0 @@
++++++-TEST_COV=myTest2
++++++-REDIS_URL=redis://127.0.0.1:6379/1
++++++\ No newline at end of file
++++++diff --git a/README.md b/README.md
++++++index 7db80e4..f13bc51 100644
++++++--- a/README.md
+++++++++ b/README.md
++++++@@ -20,5 +20,3 @@ Things you may want to cover:
++++++ * Services (job queues, cache servers, search engines, etc.)
++++++ 
++++++ * Deployment instructions
++++++-
++++++-* ...
++++++diff --git a/app/controllers/posts_controller.rb b/app/controllers/posts_controller.rb
++++++index 3f80c0b..345bfe2 100644
++++++--- a/app/controllers/posts_controller.rb
+++++++++ b/app/controllers/posts_controller.rb
++++++@@ -71,4 +71,5 @@ class PostsController < ApplicationController
++++++     def post_params
++++++       params.require(:post).permit(:author, :title, :body)
++++++     end
+++++++
++++++ end
++++++diff --git a/app/models/comment.rb b/app/models/comment.rb
++++++index 361e5cf..c8f5c5d 100644
++++++--- a/app/models/comment.rb
+++++++++ b/app/models/comment.rb
++++++@@ -1,6 +1,6 @@
++++++ class Comment < ApplicationRecord
++++++ 
++++++-  validates_presence_of :commenter, :body
+++++++  validates_presence_of :commenter
++++++ 
++++++   belongs_to :post
++++++ end
++++++diff --git a/config/application.rb b/config/application.rb
++++++index be163e0..55b5584 100644
++++++--- a/config/application.rb
+++++++++ b/config/application.rb
++++++@@ -17,6 +17,11 @@ if ENV['TEST_COV']
++++++     Redis.current.sadd(ENV.fetch('TESTS_KEY') { 'tests' }, ENV.fetch('TEST_COV'))
++++++   end
++++++ 
+++++++  if ENV['DIFF_FILE_PATH']
+++++++    require_relative '../lib/simplecov/git_diff_filter'
+++++++    SimpleCov.add_filter SimpleCov::GitDiffFilter.new(ENV['DIFF_FILE_PATH'])
+++++++  end
+++++++
++++++   SimpleCov.start 'rails' do
++++++     command_name "Manual Tests #{SecureRandom.uuid}"
++++++     coverage_dir 'app/views/testings'
++++++diff --git a/lib/simplecov/git_diff_filter.rb b/lib/simplecov/git_diff_filter.rb
++++++new file mode 100644
++++++index 0000000..f673821
++++++--- /dev/null
+++++++++ b/lib/simplecov/git_diff_filter.rb
++++++@@ -0,0 +1,20 @@
+++++++class SimpleCov::GitDiffFilter < SimpleCov::Filter
+++++++
+++++++  attr_reader :diff_files
+++++++
+++++++  def initialize(diff_file_path)
+++++++    @diff_files = File.readlines(diff_file_path).map { |line| line.rstrip }
+++++++  end
+++++++
+++++++  # def initialize(target_branch, base_branch = 'master')
+++++++  #   diff = %x(git diff --name-only #{base_branch}..#{target_branch})
+++++++  #   @diff_files = diff.split(/\n/)
+++++++  # end
+++++++
+++++++  def matches?(source_file)
+++++++    diff_files.none? do |arg|
+++++++      source_file.filename =~ /#{arg}/
+++++++    end
+++++++  end
+++++++
+++++++end
++++++\ No newline at end of file
++++++.diff
 +++++.env.development
-+++++.env.staging
-+++++.env.test
-+++++README.md
-+++++app/controllers/posts_controller.rb
-+++++app/models/comment.rb
++++++Gemfile
++++++Gemfile.lock
 +++++config/application.rb
++++++config/initializers/simplecov.rb
++++++lib/simplecov-html/views/file_list.erb
++++++lib/simplecov-html/views/source_file.erb
 +++++lib/simplecov/git_diff_filter.rb
 ++++diff --git a/.env.development b/.env.development
-++++index 68ba0a6..c3a2b92 100644
+++++index 68ba0a6..58343d7 100644
 ++++--- a/.env.development
 +++++++ b/.env.development
 ++++@@ -1,2 +1,4 @@
 ++++-#TEST_COV=myTest1
-+++++TEST_COV=myTest2
-+++++DIFF_FILE_PATH=.diff
++++++TEST_COV=myTest3
++++++#DIFF_FILE_PATH=.diff
 +++++#TARGET_BRANCH=branch1
 ++++ REDIS_URL=redis://127.0.0.1:6379/0
 ++++\ No newline at end of file
@@ -59,6 +172,60 @@ index 0000000..33cf911
 ++++-TEST_COV=myTest2
 ++++-REDIS_URL=redis://127.0.0.1:6379/1
 ++++\ No newline at end of file
+++++diff --git a/Gemfile b/Gemfile
+++++index fc784e6..8768fff 100644
+++++--- a/Gemfile
++++++++ b/Gemfile
+++++@@ -35,8 +35,9 @@ gem 'jbuilder', '~> 2.5'
+++++ # Use Capistrano for deployment
+++++ # gem 'capistrano-rails', group: :development
+++++ 
+++++-gem 'rails_12factor'
+++++ gem 'simplecov'
++++++gem 'git_diff_parser'
++++++
+++++ gem 'dotenv-rails'
+++++ gem 'redis'
+++++ 
+++++diff --git a/Gemfile.lock b/Gemfile.lock
+++++index 11478c1..ff87815 100644
+++++--- a/Gemfile.lock
++++++++ b/Gemfile.lock
+++++@@ -58,6 +58,7 @@ GEM
+++++     erubis (2.7.0)
+++++     execjs (2.7.0)
+++++     ffi (1.9.18)
++++++    git_diff_parser (3.0.0)
+++++     globalid (0.4.0)
+++++       activesupport (>= 4.2.0)
+++++     i18n (0.8.4)
+++++@@ -108,11 +109,6 @@ GEM
+++++       nokogiri (>= 1.6)
+++++     rails-html-sanitizer (1.0.3)
+++++       loofah (~> 2.0)
+++++-    rails_12factor (0.0.3)
+++++-      rails_serve_static_assets
+++++-      rails_stdout_logging
+++++-    rails_serve_static_assets (0.0.5)
+++++-    rails_stdout_logging (0.0.5)
+++++     railties (5.0.3)
+++++       actionpack (= 5.0.3)
+++++       activesupport (= 5.0.3)
+++++@@ -174,13 +170,13 @@ DEPENDENCIES
+++++   byebug
+++++   coffee-rails (~> 4.2)
+++++   dotenv-rails
++++++  git_diff_parser
+++++   jbuilder (~> 2.5)
+++++   jquery-rails
+++++   listen (~> 3.0.5)
+++++   pg (~> 0.18)
+++++   puma (~> 3.0)
+++++   rails (~> 5.0.3)
+++++-  rails_12factor
+++++   redis
+++++   sass-rails (~> 5.0)
+++++   simplecov
 ++++diff --git a/README.md b/README.md
 ++++index 7db80e4..f13bc51 100644
 ++++--- a/README.md
@@ -92,39 +259,179 @@ index 0000000..33cf911
 ++++   belongs_to :post
 ++++ end
 ++++diff --git a/config/application.rb b/config/application.rb
-++++index be163e0..55b5584 100644
+++++index be163e0..1a541c4 100644
 ++++--- a/config/application.rb
 +++++++ b/config/application.rb
 ++++@@ -17,6 +17,11 @@ if ENV['TEST_COV']
 ++++     Redis.current.sadd(ENV.fetch('TESTS_KEY') { 'tests' }, ENV.fetch('TEST_COV'))
 ++++   end
 ++++ 
-+++++  if ENV['DIFF_FILE_PATH']
-+++++    require_relative '../lib/simplecov/git_diff_filter'
-+++++    SimpleCov.add_filter SimpleCov::GitDiffFilter.new(ENV['DIFF_FILE_PATH'])
-+++++  end
++++++  # if ENV['DIFF_FILE_PATH']
++++++  #   require_relative '../lib/simplecov/git_diff_filter'
++++++  #   SimpleCov.add_filter SimpleCov::GitDiffFilter.new(ENV['DIFF_FILE_PATH'])
++++++  # end
 +++++
 ++++   SimpleCov.start 'rails' do
 ++++     command_name "Manual Tests #{SecureRandom.uuid}"
 ++++     coverage_dir 'app/views/testings'
+++++diff --git a/config/initializers/simplecov.rb b/config/initializers/simplecov.rb
+++++index d3f4f2a..caf5537 100644
+++++--- a/config/initializers/simplecov.rb
++++++++ b/config/initializers/simplecov.rb
+++++@@ -50,12 +50,22 @@ module SimpleCov
+++++   module Formatter
+++++     class HTMLFormatter
+++++ 
++++++      attr_reader :lines_by_file
++++++
++++++      def initialize
++++++        if ENV['DIFF_FILE_PATH']
++++++          @lines_by_file = GitDiffParser.parse(File.read(ENV['DIFF_FILE_PATH'])).map do |patch|
++++++            [patch.file, patch.changed_line_numbers]
++++++          end.to_h
++++++        end
++++++      end
++++++
+++++       def format(result)
+++++         Dir[File.join(File.dirname(__FILE__), "../public/*")].each do |path|
+++++           FileUtils.cp_r(path, asset_output_path)
+++++         end
+++++ 
+++++-        template("layout").result(binding)
++++++        template('layout').result(binding)
+++++ 
+++++         # File.open(File.join(output_path, "index.html"), "wb") do |file|
+++++         #   file.puts template("layout").result(binding)
+++++@@ -65,6 +75,32 @@ module SimpleCov
+++++ 
+++++       private
+++++ 
++++++      def custom_template(name)
++++++        ERB.new(File.read(Rails.root.join('lib/simplecov-html/views/', "#{name}.erb")))
++++++      end
++++++
++++++      # Returns a table containing the given source files
++++++      def formatted_file_list(title, source_files)
++++++        title_id = title.gsub(/^[^a-zA-Z]+/, "").gsub(/[^a-zA-Z0-9\-\_]/, "")
++++++        # Silence a warning by using the following variable to assign to itself:
++++++        # "warning: possibly useless use of a variable in void context"
++++++        # The variable is used by ERB via binding.
++++++        title_id = title_id
++++++        custom_template("file_list").result(binding)
++++++      end
++++++
++++++      def formatted_source_file(source_file)
++++++        custom_template('source_file').result(binding)
++++++      end
++++++
++++++      def file_from_pr?(source_file)
++++++        (lines_by_file || {})[shortened_filename(source_file)].present?
++++++      end
++++++
++++++      def line_from_pr?(source_file, line_number)
++++++        (lines_by_file || {})[shortened_filename(source_file)]&.include?(line_number)
++++++      end
++++++
+++++       def asset_output_path
+++++         return @asset_output_path if defined?(@asset_output_path) && @asset_output_path
+++++         @asset_output_path = File.join(asset_root_path, 'assets', SimpleCov::Formatter::HTMLFormatter::VERSION)
+++++diff --git a/lib/simplecov-html/views/file_list.erb b/lib/simplecov-html/views/file_list.erb
+++++new file mode 100644
+++++index 0000000..bea95a6
+++++--- /dev/null
++++++++ b/lib/simplecov-html/views/file_list.erb
+++++@@ -0,0 +1,47 @@
++++++<div class="file_list_container" id="<%= title_id %>">
++++++  <h2>
++++++    <span class="group_name"><%= title %></span>
++++++    (<span class="covered_percent"><span class="<%= coverage_css_class(source_files.covered_percent) %>"><%= source_files.covered_percent.round(2) %>%</span></span>
++++++     covered at
++++++     <span class="covered_strength">
++++++       <span class="<%= strength_css_class(source_files.covered_strength) %>">
++++++         <%= source_files.covered_strength.round(2) %>
++++++       </span>
++++++    </span> hits/line)
++++++  </h2>
++++++  <a name="<%= title_id %>"></a>
++++++  <div>
++++++    <b><%= source_files.length %></b> files in total.
++++++    <b><%= source_files.lines_of_code %></b> relevant lines. 
++++++    <span class="green"><b><%= source_files.covered_lines %></b> lines covered</span> and
++++++    <span class="red"><b><%= source_files.missed_lines %></b> lines missed </span>
++++++  </div>
++++++  <table class="file_list">
++++++    <thead>
++++++      <tr>
++++++        <th>File</th>
++++++        <th>% covered</th>
++++++        <th>Lines</th>
++++++        <th>Relevant Lines</th>
++++++        <th>Lines covered</th>
++++++        <th>Lines missed</th>
++++++        <th>Avg. Hits / Line</th>
++++++        <th>From PR</th>
++++++      </tr>
++++++    </thead>
++++++    <tbody>
++++++      <% source_files.each do |source_file| %>
++++++      <tr>
++++++        <td class="strong"><%= link_to_source_file(source_file) %></td>
++++++        <td class="<%= coverage_css_class(source_file.covered_percent) %> strong"><%= source_file.covered_percent.round(2).to_s %> %</td>
++++++        <td><%= source_file.lines.count %></td>
++++++        <td><%= source_file.covered_lines.count + source_file.missed_lines.count %></td>
++++++        <td><%= source_file.covered_lines.count %></td>
++++++        <td><%= source_file.missed_lines.count %></td>
++++++        <td><%= source_file.covered_strength %></td>
++++++        <td><%= file_from_pr?(source_file) ? 'PR' : '' %></td>
++++++      </tr>
++++++      <% end %>
++++++    </tbody>
++++++  </table>
++++++</div>
+++++diff --git a/lib/simplecov-html/views/source_file.erb b/lib/simplecov-html/views/source_file.erb
+++++new file mode 100644
+++++index 0000000..2cec2ee
+++++--- /dev/null
++++++++ b/lib/simplecov-html/views/source_file.erb
+++++@@ -0,0 +1,24 @@
++++++<div class="source_table" id="<%= id source_file %>">
++++++  <div class="header">
++++++    <h3><%= shortened_filename source_file %></h3>
++++++    <h4><span class="<%= coverage_css_class(source_file.covered_percent) %>"><%= source_file.covered_percent.round(2).to_s %> %</span> covered</h4>
++++++    <div>
++++++      <b><%= source_file.lines_of_code %></b> relevant lines. 
++++++      <span class="green"><b><%= source_file.covered_lines.count %></b> lines covered</span> and
++++++      <span class="red"><b><%= source_file.missed_lines.count %></b> lines missed.</span>
++++++    </div>
++++++  </div>
++++++  
++++++  <pre>
++++++    <ol>
++++++      <% source_file.lines.each do |line| %>
++++++        <li class="<%= line.status %>" data-hits="<%= line.coverage ? line.coverage : '' %>" data-linenumber="<%= line.number %>">
++++++          <% if line.covered? %><span class="hits"><%= line.coverage %></span><% end %>
++++++          <% if line.skipped? %><span class="hits">skipped</span><% end %>
++++++          <% if line_from_pr?(source_file, line.number) %> <span class="hits">PR</span> <% end %>
++++++          <code class="ruby"><%= CGI.escapeHTML(line.src.chomp) %></code>
++++++        </li>
++++++      <% end %>
++++++    </ol>
++++++  </pre>
++++++</div>
 ++++diff --git a/lib/simplecov/git_diff_filter.rb b/lib/simplecov/git_diff_filter.rb
 ++++new file mode 100644
-++++index 0000000..f673821
+++++index 0000000..e9be0a6
 ++++--- /dev/null
 +++++++ b/lib/simplecov/git_diff_filter.rb
-++++@@ -0,0 +1,20 @@
+++++@@ -0,0 +1,16 @@
 +++++class SimpleCov::GitDiffFilter < SimpleCov::Filter
 +++++
 +++++  attr_reader :diff_files
 +++++
 +++++  def initialize(diff_file_path)
-+++++    @diff_files = File.readlines(diff_file_path).map { |line| line.rstrip }
++++++    patches = GitDiffParser.parse(File.read(diff_file_path))
++++++    @diff_files = patches.map(&:file)
 +++++  end
-+++++
-+++++  # def initialize(target_branch, base_branch = 'master')
-+++++  #   diff = %x(git diff --name-only #{base_branch}..#{target_branch})
-+++++  #   @diff_files = diff.split(/\n/)
-+++++  # end
 +++++
 +++++  def matches?(source_file)
 +++++    diff_files.none? do |arg|
@@ -136,22 +443,14 @@ index 0000000..33cf911
 ++++\ No newline at end of file
 ++++.diff
 ++++.env.development
-++++Gemfile
-++++Gemfile.lock
-++++config/application.rb
-++++config/initializers/simplecov.rb
-++++lib/simplecov-html/views/file_list.erb
-++++lib/simplecov-html/views/source_file.erb
-++++lib/simplecov/git_diff_filter.rb
 +++diff --git a/.env.development b/.env.development
-+++index 68ba0a6..58343d7 100644
++++index 68ba0a6..9c253df 100644
 +++--- a/.env.development
 ++++++ b/.env.development
-+++@@ -1,2 +1,4 @@
++++@@ -1,2 +1,3 @@
 +++-#TEST_COV=myTest1
-++++TEST_COV=myTest3
-++++#DIFF_FILE_PATH=.diff
-++++#TARGET_BRANCH=branch1
+++++#TEST_COV=myTest3
+++++DIFF_FILE_PATH=.diff
 +++ REDIS_URL=redis://127.0.0.1:6379/0
 +++\ No newline at end of file
 +++diff --git a/.env.staging b/.env.staging
@@ -436,7 +735,6 @@ index 0000000..33cf911
 ++++end
 +++\ No newline at end of file
 +++.diff
-+++.env.development
 ++diff --git a/.env.development b/.env.development
 ++index 68ba0a6..9c253df 100644
 ++--- a/.env.development
@@ -729,6 +1027,8 @@ index 0000000..33cf911
 +++end
 ++\ No newline at end of file
 ++.diff
+++app/controllers/coverage_controller.rb
+++app/controllers/posts_controller.rb
 +diff --git a/.env.development b/.env.development
 +index 68ba0a6..9c253df 100644
 +--- a/.env.development
@@ -815,11 +1115,97 @@ index 0000000..33cf911
 + * Deployment instructions
 +-
 +-* ...
++diff --git a/app/controllers/coverage_controller.rb b/app/controllers/coverage_controller.rb
++deleted file mode 100644
++index d0e060a..0000000
++--- a/app/controllers/coverage_controller.rb
+++++ /dev/null
++@@ -1,5 +0,0 @@
++-class CoverageController < ApplicationController
++-
++-  layout false
++-
++-end
++\ No newline at end of file
 +diff --git a/app/controllers/posts_controller.rb b/app/controllers/posts_controller.rb
-+index 3f80c0b..345bfe2 100644
++index 3f80c0b..1aba8ef 100644
 +--- a/app/controllers/posts_controller.rb
 ++++ b/app/controllers/posts_controller.rb
-+@@ -71,4 +71,5 @@ class PostsController < ApplicationController
++@@ -1,64 +1,40 @@
++ class PostsController < ApplicationController
++   before_action :set_post, only: [:show, :edit, :update, :destroy]
++ 
++-  # GET /posts
++-  # GET /posts.json
++   def index
++     @posts = Post.all
++   end
++ 
++-  # GET /posts/1
++-  # GET /posts/1.json
++   def show
++   end
++ 
++-  # GET /posts/new
++   def new
++     @post = Post.new
++   end
++ 
++-  # GET /posts/1/edit
++   def edit
++   end
++ 
++-  # POST /posts
++-  # POST /posts.json
++   def create
++     @post = Post.new(post_params)
++-
++-    respond_to do |format|
++-      if @post.save
++-        format.html { redirect_to @post, notice: 'Post was successfully created.' }
++-        format.json { render :show, status: :created, location: @post }
++-      else
++-        format.html { render :new }
++-        format.json { render json: @post.errors, status: :unprocessable_entity }
++-      end
+++    if @post.save
+++      redirect_to @post, notice: 'Post was successfully created.'
+++    else
+++      render :new
++     end
++   end
++ 
++-  # PATCH/PUT /posts/1
++-  # PATCH/PUT /posts/1.json
++   def update
++-    respond_to do |format|
++-      if @post.update(post_params)
++-        format.html { redirect_to @post, notice: 'Post was successfully updated.' }
++-        format.json { render :show, status: :ok, location: @post }
++-      else
++-        format.html { render :edit }
++-        format.json { render json: @post.errors, status: :unprocessable_entity }
++-      end
+++    if @post.update(post_params)
+++      redirect_to @post, notice: 'Post was successfully updated.'
+++    else
+++      render :edit
++     end
++   end
++ 
++-  # DELETE /posts/1
++-  # DELETE /posts/1.json
++   def destroy
++     @post.destroy
++-    respond_to do |format|
++-      format.html { redirect_to posts_url, notice: 'Post was successfully destroyed.' }
++-      format.json { head :no_content }
++-    end
+++    redirect_to posts_url, notice: 'Post was successfully destroyed.'
++   end
++ 
++   private
++@@ -71,4 +47,5 @@ class PostsController < ApplicationController
 +     def post_params
 +       params.require(:post).permit(:author, :title, :body)
 +     end
@@ -1021,8 +1407,6 @@ index 0000000..33cf911
 ++end
 +\ No newline at end of file
 +.diff
-+app/controllers/coverage_controller.rb
-+app/controllers/posts_controller.rb
 diff --git a/.env.development b/.env.development
 index 68ba0a6..9c253df 100644
 --- a/.env.development
@@ -1400,4 +1784,3 @@ index 0000000..e9be0a6
 +
 +end
 \ No newline at end of file
-.diff
