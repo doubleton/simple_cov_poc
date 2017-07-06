@@ -17,6 +17,11 @@ if ENV['TEST_COV']
     Redis.current.sadd(ENV.fetch('TESTS_KEY') { 'tests' }, ENV.fetch('TEST_COV'))
   end
 
+  # if ENV['DIFF_FILE_PATH']
+  #   require_relative '../lib/simplecov/git_diff_filter'
+  #   SimpleCov.add_filter SimpleCov::GitDiffFilter.new(ENV['DIFF_FILE_PATH'])
+  # end
+
   SimpleCov.start 'rails' do
     command_name "Manual Tests #{SecureRandom.uuid}"
     coverage_dir 'app/views/testings'

@@ -50,12 +50,22 @@ module SimpleCov
   module Formatter
     class HTMLFormatter
 
+      attr_reader :lines_by_file
+
+      def initialize
+        if ENV['DIFF_FILE_PATH']
+          @lines_by_file = GitDiffParser.parse(File.read(ENV['DIFF_FILE_PATH'])).map do |patch|
+            [patch.file, patch.changed_line_numbers]
+          end.to_h
+        end
+      end
+
       def format(result)
         Dir[File.join(File.dirname(__FILE__), "../public/*")].each do |path|
           FileUtils.cp_r(path, asset_output_path)
         end
 
-        template("layout").result(binding)
+        template('layout').result(binding)
 
         # File.open(File.join(output_path, "index.html"), "wb") do |file|
         #   file.puts template("layout").result(binding)
@@ -64,6 +74,32 @@ module SimpleCov
       end
 
       private
+
+      def custom_template(name)
+        ERB.new(File.read(Rails.root.join('lib/simplecov-html/views/', "#{name}.erb")))
+      end
+
+      # Returns a table containing the given source files
+      def formatted_file_list(title, source_files)
+        title_id = title.gsub(/^[^a-zA-Z]+/, "").gsub(/[^a-zA-Z0-9\-\_]/, "")
+        # Silence a warning by using the following variable to assign to itself:
+        # "warning: possibly useless use of a variable in void context"
+        # The variable is used by ERB via binding.
+        title_id = title_id
+        custom_template("file_list").result(binding)
+      end
+
+      def formatted_source_file(source_file)
+        custom_template('source_file').result(binding)
+      end
+
+      def file_from_pr?(source_file)
+        (lines_by_file || {})[shortened_filename(source_file)].present?
+      end
+
+      def line_from_pr?(source_file, line_number)
+        (lines_by_file || {})[shortened_filename(source_file)]&.include?(line_number)
+      end
 
       def asset_output_path
         return @asset_output_path if defined?(@asset_output_path) && @asset_output_path
