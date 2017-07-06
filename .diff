@@ -1043,3 +1043,5 @@ app/views/testings/.last_run.json
 app/views/testings/.resultset.json
 app/views/testings/.resultset.json.lock
 app/views/testings/index.html
+.diff_file
+.diff_invert
